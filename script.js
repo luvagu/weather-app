@@ -2,6 +2,8 @@
 // https://api.openweathermap.org/data/2.5/onecall?lat=-0.10689522222222221&lon=-78.482827&units=metric&appid=7e3a8bbdc4b7590ed50d2f86fa3ebaee
 // https://api.openweathermap.org/data/2.5/weather?q=quito&units=metric&appid=7e3a8bbdc4b7590ed50d2f86fa3ebaee
 
+// ICON URL is http://openweathermap.org/img/wn/{iconcode}@2x.png
+
 // API DOCS
 // https://openweathermap.org/current
 
