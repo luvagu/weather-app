@@ -7,10 +7,9 @@
 
 const displayLocation = document.querySelector('[data-coordinates]')
 const displayError = document.querySelector('[data-errors]')
+const apiKey = '7e3a8bbdc4b7590ed50d2f86fa3ebaee'
 let lat = ''
 let lon = ''
-const apiKey = '7e3a8bbdc4b7590ed50d2f86fa3ebaee'
-const apiUrl = 'https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude={part}&appid={API key}'
 
 function getLocation() {
   if (navigator.geolocation) {
@@ -38,24 +37,24 @@ function excludeData(parts) {
     return ''
 }
 
-async function fetchWeatherDataCurrentLocation() {
+async function fetchWeatherDataByCurrentLocation() {
     try {
+        if (apiKey == '') throw new Error('Missing API Key')
         const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric${excludeData()}&appid=${apiKey}`)
         const data = await response.json()
         console.log(data)
     } catch (error) {
-        console.log(error)
         displayError.innerText = 'Failed to reach the API with error: ' + error.message
     }
 }
 
 async function fetchWeatherDataByCity(city) {
     try {
+        if (apiKey == '') throw new Error('Missing API Key')
         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`)
         const data = await response.json()
         console.log(data)
     } catch (error) {
-        console.log(error)
         displayError.innerText = 'Failed to reach the API with error: ' + error.message
     }
 }
