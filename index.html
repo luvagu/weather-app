@@ -4,11 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wheather App</title>
+
+    <!-- Weather Icons -->
+    <link rel="stylesheet" href="css/weather-icons.min.css">
+    <link rel="stylesheet" href="css/weather-icons-wind.min.css">
+
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
 </head>
 <body>
+    <div id="loading" class="loaderContainer"><div class="loader"></div></div>
     <div class="test" data-coordinates></div>
     <div class="error" data-errors></div>
+    <!-- <i class="wi wi-owm-300"></i>
+    <i class="wi wi-owm-day-300"></i>
+    <i class="wi wi-owm-night-300"></i> -->
+
+    <section class="tools_box">
+        <div class="seacrch_box">
+            <img class="search_icon" src="/assets/search.svg" alt="search icon">
+            <input class="search_input" type="text" placeholder="Weather in your city" data-weather-query>
+        </div>
+        <div class="location" data-weather-current-location>
+            <img class="location_icon" src="/assets/location.svg" alt="location icon">
+        </div>
+        <div id="coordinatesBlock" class="coordinates">
+             <p>Latitude: <span data-latitude></span></p>
+             <p>Longitude: <span data-longitude></span></p>
+        </div>
+        <div class="units">
+            <span class="active" data-weather-celsius><i class="wi wi-celsius"></i></span>
+            <span data-weather-fahrenheit><i class="wi wi-fahrenheit"></i></span>
+        </div>
+    </section>
+
+    <article class="widget">
+        <div class="left_widget">
+            <span class="place"></span>
+            <div class="icon_degs">
+                <span class="icon"></span>
+                <span class="degs"></span>
+            </div>
+        </div>
+        <div class="right_widget">
+            <div class="forcast"></div>
+        </div>
+    </article>
+
 </body>
 </html>
