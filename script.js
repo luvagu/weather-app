@@ -113,10 +113,13 @@ function getDayShortName(timestamp) {
 
 function widgetTemplate(data) {
 	const { name } = data
-	const { temp }  = data.main ? data.main : data.current ? data.current : 'N/A'
-	const weather  = data.weather ? data.weather : data.current ? data.current.weather : []
-	const { id, icon } = weather[0]
+	const { temp, feels_like }  = data.main ? data.main : data.current ? data.current : undefined
+	const temp_min = data.main ? data.main.temp_min : undefined
+	const temp_max = data.main ? data.main.temp_max : undefined
+	const weather = data.weather ? data.weather : data.current ? data.current.weather : []
+	const { id, icon, description } = weather[0] ? weather[0] : undefined
 	const daily = data.daily ? data.daily : []
+
 	const limit = 3
 
 	const html = `
@@ -144,6 +147,16 @@ function widgetTemplate(data) {
 						</div>
 					`)
 					}).join('')
+				: ''
+			}
+			${temp_min && temp_max
+				? (`
+					<div class="city_info">
+						<span class="description">${description}</span>
+						<span>${temp_max}&deg; / ${temp_min}&deg;</span>
+						<span>Feels like ${feels_like}&deg;</span>
+					</div>
+				`)
 				: ''
 			}
 			</div>

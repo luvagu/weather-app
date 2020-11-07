@@ -196,3 +196,13 @@ body {
 .daily .wi {
     color: gold;
 }
+
+.city_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.city_info > .description {
+    text-transform: capitalize;
+}
