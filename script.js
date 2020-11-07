@@ -16,6 +16,7 @@ const unitsFahrenheit = document.querySelector('[data-weather-fahrenheit]')
 const coordinatesBlock = document.querySelector('[data-coordinates]')
 const latitudeText = document.querySelector('[data-latitude]')
 const longitudeText = document.querySelector('[data-longitude]')
+const weatherWidget = document.querySelector('[data-weather-widget]')
 
 const apiKey = '7e3a8bbdc4b7590ed50d2f86fa3ebaee'
 let lat = ''
@@ -58,6 +59,14 @@ function toggleUnitActive(show) {
 	}
 }
 
+function toggleWeatherWidget(show) {
+	if (show) {
+		weatherWidget.classList.remove('hidden')
+	} else {
+		weatherWidget.classList.add('hidden')
+	}
+}
+
 function getLocation() {
 	if (navigator.geolocation) {
 		navigator.geolocation.getCurrentPosition(getPosition, handleError)
@@ -95,15 +104,22 @@ function excludeData(parts) {
 	return ''
 }
 
-function renderWidget(data) {
+function getDayShortName(timestamp) {
+	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+	const date = new Date(timestamp)
+	
+	 return days[date.getDay()]
+}
 
+function widgetTemplate(data) {
 	const { name } = data
 	const { temp }  = data.main ? data.main : data.current ? data.current : 'N/A'
-	const weather  = data.weather ? data.weather : data.current ? data.current.weather : null
+	const weather  = data.weather ? data.weather : data.current ? data.current.weather : []
 	const { id, icon } = weather[0]
+	const daily = data.daily ? data.daily : []
+	const limit = 3
 
-	document.querySelector('[data-weather-widget]').innerHTML = ''
-	document.querySelector('[data-weather-widget]').insertAdjacentHTML('beforeend', `
+	const html = `
 		<div class="left_widget">
 			<div class="place">
 				<svg class="svg_location_icon">
@@ -113,48 +129,73 @@ function renderWidget(data) {
 			</div>
 			<div class="icon_degs">
 				<span class="icon"><i class="wi wi-owm-${icon.includes('d') ? 'day' : 'night'}-${id}"></i></span>
-				<span class="degs">${temp} <i class="wi wi-degrees"></i></span>
+				<span class="degs">${temp}&deg;</span>
 			</div>
 		</div>
 		<div class="right_widget">
-			<div class="forcast">sdfasdfa</div>
+			<div class="forcast">
+				${daily.length && 
+					daily.forEach((e, i) => i < limit && console.log(getDayShortName(e.dt)))
+				}
+			</div>
 		</div>
-	`)
+	`
+
+	return html
+}
+
+function renderWidget(data) {
+	const html = widgetTemplate(data)
+
+	weatherWidget.innerHTML = ''
+	weatherWidget.insertAdjacentHTML('beforeend', html)
+	toggleWeatherWidget(true)
 }
 
 async function fetchWeatherDataByCurrentLocation(units = 'metric') {
-    // console.log('lat >>>', lat)
-    // console.log('lon >>>', lon)
 	try {
 		if (apiKey == '') throw new Error('Missing API Key')
+
+		toggleError()
 		toggleLoader(true)
+
 		const response = await fetch(
 			`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=${units}${excludeData()}&appid=${apiKey}`
 		)
 		const data = await response.json()
-		// console.log(data)
+
 		renderWidget(data)
 		toggleLoader()
 	} catch (error) {
 		toggleError(true)
 		displayError.innerText = `Failed to reach the API with error: ${error.message}`
+		toggleLoader()
 	}
 }
 
 async function fetchWeatherDataByCity(query, units = 'metric') {
 	try {
 		if (apiKey == '') throw new Error('Missing API Key')
+
+		toggleError()
 		toggleLoader(true)
+
 		const response = await fetch(
 			`https://api.openweathermap.org/data/2.5/weather?q=${query}&units=${units}&appid=${apiKey}`
 		)
 		const data = await response.json()
-		// console.log(data)
-		renderWidget(data)
+		
+		if (data.cod && data.cod !== 200) {
+			throw new Error(data.message)
+		} else {
+			renderWidget(data)
+		}
+		
 		toggleLoader()
 	} catch (error) {
 		toggleError(true)
-        displayError.innerText = `Failed to reach the API with error: ${error.message}`
+		displayError.innerText = `Failed to reach the API with error: ${error.message}`
+		toggleLoader()
 	}
 }
 

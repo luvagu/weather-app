@@ -139,6 +139,7 @@ body {
     width: 50%;
     display: flex;
     flex-direction: column;
+    color: white;
 }
 
 .right_widget {
@@ -148,7 +149,6 @@ body {
 
 .place {
     display: flex;
-    color: white;
 }
 
 .svg_location_icon {
@@ -159,4 +159,18 @@ body {
 
 .place_name {
     margin-left: 10px;
+}
+
+.icon_degs {
+    display: flex;
+    margin-top: 20px;
+    font-size: 4rem;
+}
+
+.icon_degs > .icon {
+    margin-right: 20px;
+}
+
+.icon_degs > .degs {
+    font-weight: 400;
 }
