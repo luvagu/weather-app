@@ -106,9 +106,9 @@ function excludeData(parts) {
 
 function getDayShortName(timestamp) {
 	const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-	const date = new Date(timestamp)
-	
-	 return days[date.getDay()]
+	const date = new Date(timestamp * 1000)
+
+	return days[date.getDay()]
 }
 
 function widgetTemplate(data) {
@@ -134,10 +134,20 @@ function widgetTemplate(data) {
 		</div>
 		<div class="right_widget">
 			<div class="forcast">
-				${daily.length && 
-					daily.forEach((e, i) => i < limit && console.log(getDayShortName(e.dt)))
-				}
+			${daily.length 
+				? daily.map((e, i) => {
+					if (i >= limit) return
+					return (`
+						<div class="daily">
+							<span><i class="wi wi-owm-${e.weather[0].icon.includes('d') ? 'day' : 'night'}-${e.weather[0].id}"></i></span>
+							<span>${getDayShortName(e.dt)}</span>
+						</div>
+					`)
+					}).join('')
+				: ''
+			}
 			</div>
+			<div class="date_updated">Updated ${new Date().toLocaleString('en-GB')}</div>
 		</div>
 	`
 
