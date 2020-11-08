@@ -1,11 +1,12 @@
 // TEST URLS
 // https://api.openweathermap.org/data/2.5/onecall?lat=-0.11&lon=-78.48&units=metric&appid=7e3a8bbdc4b7590ed50d2f86fa3ebaee
 // https://api.openweathermap.org/data/2.5/weather?q=quito&units=metric&appid=7e3a8bbdc4b7590ed50d2f86fa3ebaee
+// https://api.openweathermap.org/data/2.5/forecast/daily?q=london&cnt=7&appid=7e3a8bbdc4b7590ed50d2f86fa3ebaee
 
 // ICON URL is http://openweathermap.org/img/wn/{iconcode}@2x.png
 
 // API DOCS
-// https://openweathermap.org/current
+// https://openweathermap.org/api
 
 const displayLocation = document.querySelector('[data-coordinates]')
 const displayError = document.querySelector('[data-errors]')
@@ -94,6 +95,7 @@ function getPosition(position) {
     fetchWeatherDataByCurrentLocation()
 }
 
+// @ToDo
 function excludeData(parts) {
 	const excludeParts = {
 		current: 'current',
