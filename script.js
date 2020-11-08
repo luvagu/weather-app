@@ -23,6 +23,7 @@ let lat = ''
 let lon = ''
 let city = ''
 let actionType = 'location'
+let unitsType = 'metric'
 
 function toggleLoader(show) {
 	const loaderOverlay = document.getElementById('loading')
@@ -117,7 +118,7 @@ function widgetTemplate(data) {
 	const temp_min = data.main ? data.main.temp_min : undefined
 	const temp_max = data.main ? data.main.temp_max : undefined
 	const weather = data.weather ? data.weather : data.current ? data.current.weather : []
-	const { id, icon, description } = weather[0] ? weather[0] : undefined
+	const { id, icon, main, description } = weather[0] ? weather[0] : undefined
 	const daily = data.daily ? data.daily : []
 
 	const limit = 3
@@ -132,7 +133,10 @@ function widgetTemplate(data) {
 			</div>
 			<div class="icon_degs">
 				<span class="icon"><i class="wi wi-owm-${icon.includes('d') ? 'day' : 'night'}-${id}"></i></span>
-				<span class="degs">${temp}&deg;</span>
+				<div class="degs_desc">
+					<span class="degs">${temp}&deg;</span>
+					<span class="main">${main}</span>
+				</div>
 			</div>
 		</div>
 		<div class="right_widget">
@@ -175,7 +179,7 @@ function renderWidget(data) {
 	toggleWeatherWidget(true)
 }
 
-async function fetchWeatherDataByCurrentLocation(units = 'metric') {
+async function fetchWeatherDataByCurrentLocation() {
 	try {
 		if (apiKey == '') throw new Error('Missing API Key')
 
@@ -183,7 +187,7 @@ async function fetchWeatherDataByCurrentLocation(units = 'metric') {
 		toggleLoader(true)
 
 		const response = await fetch(
-			`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=${units}${excludeData()}&appid=${apiKey}`
+			`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=${unitsType}${excludeData()}&appid=${apiKey}`
 		)
 		const data = await response.json()
 
@@ -196,7 +200,7 @@ async function fetchWeatherDataByCurrentLocation(units = 'metric') {
 	}
 }
 
-async function fetchWeatherDataByCity(query, units = 'metric') {
+async function fetchWeatherDataByCity(query) {
 	try {
 		if (apiKey == '') throw new Error('Missing API Key')
 
@@ -204,7 +208,7 @@ async function fetchWeatherDataByCity(query, units = 'metric') {
 		toggleLoader(true)
 
 		const response = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?q=${query}&units=${units}&appid=${apiKey}`
+			`https://api.openweathermap.org/data/2.5/weather?q=${query}&units=${unitsType}&appid=${apiKey}`
 		)
 		const data = await response.json()
 		
@@ -244,17 +248,20 @@ function handleError(error) {
 
 searchInput.addEventListener('keydown', (e) => {
 	if (e.key == 'Enter') {
+		actionType = 'city'
+
 		city = e.target.value
 		fetchWeatherDataByCity(city)
 		e.target.blur()
-		actionType = 'city'
-		toggleCoordinatesBlock(true)
+		toggleCoordinatesBlock()
 	}
 })
 
 locationIcon.addEventListener('click', getLocation)
 
 unitsCelsius.addEventListener('click', () => {
+	unitsType = 'metric'
+
 	if (actionType == 'location') {
 		if (!lat && !lon) return
 		fetchWeatherDataByCurrentLocation()
@@ -267,12 +274,14 @@ unitsCelsius.addEventListener('click', () => {
 })
 
 unitsFahrenheit.addEventListener('click', () => {
+	unitsType = 'imperial'
+
 	if (actionType == 'location') {
 		if (!lat && !lon) return
-		fetchWeatherDataByCurrentLocation('imperial')
+		fetchWeatherDataByCurrentLocation()
 	} else {
 		if (!city) return
-		fetchWeatherDataByCity(city, 'imperial')
+		fetchWeatherDataByCity(city)
 	}
 
 	toggleUnitActive(true)

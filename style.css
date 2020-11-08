@@ -129,7 +129,7 @@ body {
 .widget {
     display: flex;
     min-width: 45%;
-    margin-top: 50px;
+    margin-top: 40px;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
     padding: 20px;
@@ -168,16 +168,26 @@ body {
 .icon_degs {
     display: flex;
     margin-top: 20px;
-    font-size: 4rem;
 }
 
 .icon_degs > .icon {
     color: gold;
     margin-right: 20px;
+    font-size: 4.5rem;
 }
 
-.icon_degs > .degs {
+.degs_desc {
+    display: flex;
+    flex-direction: column;
+}
+
+.degs_desc > .degs {
     font-weight: 400;
+    font-size: 3.5rem;
+}
+
+.degs_desc > .main {
+    text-transform: capitalize;
 }
 
 .forcast {
